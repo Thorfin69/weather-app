@@ -2,6 +2,9 @@ import React, { useState, useEffect } from 'react';
 
 import axios from 'axios';
 import './Weather.css';
+import { Thermometer } from 'lucide-react';
+
+
 
 const Weather = () => {
     // State variables
@@ -73,7 +76,7 @@ const Weather = () => {
                                 alt={weatherData.weather[0].main}
                                 className="weather-icon"
                             />
-                            <p>Temperature: {(weatherData.main.temp - 273.15).toFixed(2)}°C</p>
+                            <p>Temprature: {(weatherData.main.temp - 273.15).toFixed(2)}°C</p>
                             <p>Description: {weatherData.weather[0].main}</p>
                             <p>Wind Speed: {weatherData.wind.speed} m/s</p>
                             <p>Humidity: {weatherData.main.humidity}%</p>
