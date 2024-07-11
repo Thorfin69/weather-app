@@ -23,7 +23,7 @@ body {
 .weather-app {
     width: 100vh;
     height: 60vh;
-    background-color: #666267a7;
+    background-color: #988a8aaf;
     padding: 1rem;
     border-radius: 4px;
     box-shadow: rgba(0 ,0 ,0 , 0.5);
@@ -51,24 +51,18 @@ body {
 }
 .search-form .city-input:hover {}
 .search-button {
-    width: 8vh;
+    width: 80vh;
     height: 5vh;
-    border: none;
+    border: 1px solid rgb(0, 0, 255);
     border-radius: 8px;
     margin-left: 2px;
     margin-top: 3px;
-    background-color: #ffffff00;
-    color: #fff;
+    color: #080808;
     font-size: 20px;
     font-weight: 500;
-    border: 1px solid #fff;
+    padding-left: 10px;
+}
 
-}
-.search-button:hover {
-    background-color: rgb(0, 255, 255);
-    color: #000;
-    transition: all 0.3s ease-in-out;
-}
 
 .weather {
     color: #fff;

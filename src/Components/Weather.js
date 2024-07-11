@@ -31,6 +31,7 @@ const Weather = () => {
         try {
             const response = await axios.get(
                 `https://api.openweathermap.org/data/2.5/weather?q=${city}&appid=${apiKey}`
+
             );
             setWeatherData(response.data);
             setError(null); // Clear any previous error
@@ -64,7 +65,7 @@ const Weather = () => {
                         value={city}
                         onChange={(event) => setCity(event.target.value)}
                         placeholder=" Enter city name"
-                        className="city-input"
+                        className="search-button"
                     />
 
                 </form>
