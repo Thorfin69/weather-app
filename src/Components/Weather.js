@@ -2,17 +2,15 @@ import React, { useState, useEffect } from 'react';
 
 import axios from 'axios';
 import './Weather.css';
-import { Thermometer } from 'lucide-react';
 
 
 
 const Weather = () => {
     // State variables
-    const [city, setCity] = useState(''); // User-entered city name
+    const [city, setCity] = useState('Tokyo'); // User-entered city name
     const [weatherData, setWeatherData] = useState(null); // Weather data from API
     const [error, setError] = useState(null); // Error message (if any)
 
-    // users current locaion
 
 
 
@@ -45,14 +43,18 @@ const Weather = () => {
     // Fetch weather data when city changes or on initial render
     useEffect(() => {
 
+
         if (city) {
             handleSearch();
         }
+        else {
 
+        }
     }, [city]);
 
     // Component rendering with detailed structure and styling suggestions
     return (
+
 
         <main className="main">
             <div className="weather-app">

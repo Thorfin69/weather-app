@@ -3,11 +3,14 @@
     padding: 0;
     margin: 0;
     box-sizing: border-box;
+    overflow: hidden;
 }
 
 body {
-    background-color: #000;
+    background-image: url(../Assets/bg.jpg);
     font-family: Roboto flex , sans-serif;
+    height: auto;
+    width: auto;
 }
 
 .main {
@@ -20,11 +23,13 @@ body {
 .weather-app {
     width: 100vh;
     height: 60vh;
-    background-color: #66626768;
+    background-color: #666267a7;
     padding: 1rem;
     border-radius: 4px;
+    box-shadow: rgba(0 ,0 ,0 , 0.5);
 
 }
+
 .input {}
 .search-form {
     margin-top: 6px;
@@ -83,6 +88,7 @@ body {
     margin-top: 10px;
 
 }
+
 
 
 @media (max-width: 768px) {
