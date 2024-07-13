@@ -5,7 +5,7 @@ import ReactAnimatedWeather from 'react-animated-weather';
 //icon config
 const wind = {
     icon: 'WIND',
-    color: 'blue',
+    color: "blue",
     size: 30,
     animate: true
 };
@@ -14,7 +14,18 @@ const themes = {
     LIGHT: 'light-theme',
     DARK: 'dark-theme',
     CYBERPUNK: 'cyberpunk-theme',
-    COFFEE: 'coffee-theme'
+    COFFEE: 'coffee-theme',
+    OCEAN: 'ocean-theme',
+    DESERT: 'desert-theme',
+    RETRO: 'retro-theme',
+    MINIMALIST: 'minimalist-theme',
+    WINTER: 'winter-theme',
+    RETRO_FUTURE: 'retro-future-theme',
+    FOREST: 'forest-theme',
+    SUNSET: 'sunset-theme',
+
+
+
 };
 
 const Weather = () => {
@@ -23,8 +34,19 @@ const Weather = () => {
     const [forecastData, setForecastData] = useState(null);
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState(null);
-    const [currentTheme, setCurrentTheme] = useState(themes.LIGHT);
+    const [currentTheme, setCurrentTheme] = useState(themes.COFFEE);
+    const [currentThemeIndex, setCurrentThemeIndex] = useState(0);
     const apiKey = process.env.REACT_APP_API_KEY;
+
+
+    //theme changer 
+    const themeKeys = Object.keys(themes);
+    const handleThemeToggle = () => {
+        // Update theme index to cycle through themes
+        const nextIndex = (currentThemeIndex + 1) % themeKeys.length;
+        setCurrentTheme(themes[themeKeys[nextIndex]]);
+        setCurrentThemeIndex(nextIndex);
+    };
     //search handler
     const handleSearch = async (event) => {
         if (event) {
@@ -57,6 +79,8 @@ const Weather = () => {
     useEffect(() => {
         handleSearch();
     }, []);
+
+
     //meow meow 
     const handleOnChange = (event) => {
         setCity(event.target.value);
@@ -83,7 +107,9 @@ const Weather = () => {
 
         return (
             // 5 days forecast section
+
             <div className="forecast">
+
                 {Object.keys(dailyForecasts).slice(0, 5).map((date) => {
                     const forecast = dailyForecasts[date];
                     const dayName = daysOfWeek[new Date(date).getDay()];
@@ -102,10 +128,29 @@ const Weather = () => {
             </div>
         );
     };
+    const handleThemeChange = (event) => {
+        // Get the selected theme key from the event
+        const selectedThemeKey = event.target.value;
+
+        // Update the current theme state based on the selected key
+        setCurrentTheme(themes[selectedThemeKey]);
+    };
 
     return (
         //current theme
         <main className={`main ${currentTheme}`}>
+            {/* theme selection section */}
+            <div className="theme-selector">
+                <button onClick={handleThemeToggle}>Change Theme</button>
+                {/* <label htmlFor="theme-select">Select Theme:</label>
+                <select id="theme-select" onChange={handleThemeChange} value={Object.keys(themes).find(key => themes[key] === currentTheme)}>
+                    {Object.keys(themes).map((themeKey) => (
+                        <option key={themeKey} value={themeKey}>
+                            {themeKey.charAt(0) + themeKey.slice(1).toLowerCase()}
+                        </option>
+                    ))}
+                </select> */}
+            </div>
             <div className="weather-app">
                 {/* Form section */}
                 <form onSubmit={handleSearch} className="search-form">
@@ -130,7 +175,7 @@ const Weather = () => {
                     <div className="weather">
                         {/* weather details */}
                         <div className="weather-details">
-                            <h2>{weatherData.name}</h2>
+                            <h2 className='main-heading'>{weatherData.name}</h2>
                             <img
                                 src={`https://openweathermap.org/img/wn/${weatherData.weather[0].icon}@2x.png`}
                                 alt={weatherData.weather[0].main}
@@ -141,7 +186,7 @@ const Weather = () => {
                             <p className='text-1'>
                                 <ReactAnimatedWeather
                                     icon={wind.icon}
-                                    color={wind.color}
+                                    color={currentTheme === themes.CYBERPUNK ? '00ff00' : 'skyblue'}
                                     size={wind.size}
                                     animate={wind.animate}
                                     className="icon"
@@ -157,15 +202,11 @@ const Weather = () => {
                         </div>
                         {/* 5 days forecast function */}
                         {renderForecast()}
+
                     </div>
                 )}
-                {/* theme selection section */}
-                <div className="theme-selector">
-                    <button onClick={() => setCurrentTheme(themes.LIGHT)}>Light</button>
-                    <button onClick={() => setCurrentTheme(themes.DARK)}>Dark</button>
-                    <button onClick={() => setCurrentTheme(themes.CYBERPUNK)}>Cyberpunk</button>
-                    <button onClick={() => setCurrentTheme(themes.COFFEE)}>Coffee</button>
-                </div>
+
+
             </div>
         </main>
     );
