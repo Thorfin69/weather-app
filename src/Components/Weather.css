@@ -1,15 +1,6 @@
 @import url('https://fonts.googleapis.com/css2?family=Roboto+Flex:opsz,wght@8..144,100..1000&display=swap');
-:root {
-    --background-color: #f0f0f0;
-    --text-color: #333;
-    --button-bg: #007bff;
-    --button-hover-bg: #0056b3;
-    --weather-bg: rgba(255, 255, 255, 0.9);
-    --forecast-bg: rgba(255, 255, 255, 0.8);
-    --icon-color: skyblue;
-}
 
-/* Dark theme */
+:root/* Dark theme */
 .dark-theme {
     --background-color: #1c1c1c;
     --text-color: #e0e0e0;
@@ -41,6 +32,7 @@
     --forecast-bg: rgba(255, 250, 240, 0.8);
     --icon-color: #8b4513;
 }
+
 body {
     background-color: var(--background-color);
     color: var(--text-color);
@@ -63,7 +55,8 @@ body {
     width: 90%;
     max-width: 600px;
     padding: 20px;
-    background-color: rgba(255, 255, 255, 0.9);
+    background-color: var(--background-color);
+    color: var(--text-color);
     box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
     border-radius: 8px;
     text-align: center;
@@ -92,12 +85,12 @@ body {
 }
 
 .btn {
-    height: 5.6vh;
+    height: 5.9vh;
     margin-bottom: 5px;
     padding: 10px 20px;
     font-size: 16px;
-    color: white;
-    background-color: #007bff;
+    color: var(--text-color);
+    background-color: blue;
     border: none;
     border-radius: 4px;
     cursor: pointer;
@@ -127,7 +120,8 @@ body {
     padding: 20px;
     border: 1px solid #ddd;
     border-radius: 8px;
-    background-color: rgba(255, 255, 255, 0.8);
+   
+    background-color: var(--background-color);
 }
 
 .weather-icon {
@@ -181,7 +175,8 @@ p {
     max-width: 120px;
     border-radius: 8px;
     padding: 10px;
-    background-color: rgba(255, 255, 255, 0.8);
+    color: var(--text-color);
+    background-color: var(--background-color);
     box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
     text-align: center;
     border: 1px solid #ddd;
@@ -208,7 +203,7 @@ p {
     font-weight: bold;
 }
 .text-2 {
-    color: blueviolet;
+    color: var(--text-color);
     font-size: 20px;
     font-weight: 700;
 }
