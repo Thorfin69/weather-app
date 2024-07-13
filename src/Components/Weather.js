@@ -1,76 +1,124 @@
 import React, { useState, useEffect } from 'react';
-
 import axios from 'axios';
 import './Weather.css';
+import ReactAnimatedWeather from 'react-animated-weather';
 
-
+const defaults = {
+    icon: 'WIND',
+    color: 'skyblue',
+    size: 30,
+    animate: true
+};
 
 const Weather = () => {
-    // State variables
-    const [city, setCity] = useState('Tokyo'); // User-entered city name
-    const [weatherData, setWeatherData] = useState(null); // Weather data from API
-    const [error, setError] = useState(null); // Error message (if any)
-
-
-
-
-
-    // API key (replace with your actual API key from a secure environment variable)
+    const [city, setCity] = useState('Tokyo'); // Default city
+    const [weatherData, setWeatherData] = useState(null);
+    const [forecastData, setForecastData] = useState(null);
+    const [loading, setLoading] = useState(false);
+    const [error, setError] = useState(null);
     const apiKey = process.env.REACT_APP_API_KEY;
 
-    // Form submission handler
     const handleSearch = async (event) => {
         if (event) {
-            event.preventDefault(); // Prevent default form submission behavior
+            event.preventDefault();
         }
         if (!apiKey) {
             setError('Please set your API key in the .env file (or your secure environment variable storage).');
             return;
         }
+        if (!city) {
+            setError('Please enter a city name.');
+            return;
+        }
+        setLoading(true);
 
         try {
-            const response = await axios.get(
-                `https://api.openweathermap.org/data/2.5/weather?q=${city}&appid=${apiKey}`
-
-            );
-            setWeatherData(response.data);
-            setError(null); // Clear any previous error
+            const weatherResponse = await axios.get(`https://api.openweathermap.org/data/2.5/weather?q=${city}&appid=${apiKey}`);
+            setWeatherData(weatherResponse.data);
+            const forecastResponse = await axios.get(`https://api.openweathermap.org/data/2.5/forecast?q=${city}&appid=${apiKey}`);
+            setForecastData(forecastResponse.data);
+            setError(null);
         } catch (error) {
             setError('Error fetching weather data. Please try again later.');
-            console.error(error); // Log the error for debugging
+            console.error(error);
+        } finally {
+            setLoading(false);
         }
     };
 
-    // Fetch weather data when city changes or on initial render
     useEffect(() => {
+        // Perform initial search for the default city when the component mounts
+        handleSearch();
+    }, []); // Empty dependency array ensures this runs only once on mount
 
+    const handleOnChange = (event) => {
+        setCity(event.target.value);
+    };
 
-        if (city) {
-            handleSearch();
+    const getLocalTime = (timezone) => {
+        const utcTime = new Date().getTime() + new Date().getTimezoneOffset() * 60000;
+        const localTime = new Date(utcTime + 1000 * timezone);
+        return localTime;
+    };
+
+    const renderForecast = () => {
+        if (!forecastData) {
+            return null;
         }
-        else {
 
-        }
-    }, [city]);
+        // Group forecast data by day and take the first forecast of each day
+        const dailyForecasts = forecastData.list.reduce((acc, forecast) => {
+            const date = forecast.dt_txt.split(' ')[0];
+            if (!acc[date]) {
+                acc[date] = forecast;
+            }
+            return acc;
+        }, {});
+        const daysOfWeek = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
 
-    // Component rendering with detailed structure and styling suggestions
+        return (
+
+            <div className="forecast">
+                {Object.keys(dailyForecasts).slice(0, 5).map((date) => {
+                    const forecast = dailyForecasts[date];
+                    const dayName = daysOfWeek[new Date(date).getDay()];
+                    return (
+                        <div key={date} className="forecast-day">
+                            <h3>{dayName}</h3>
+                            <img
+                                src={`https://openweathermap.org/img/wn/${forecast.weather[0].icon}@2x.png`}
+                                alt={forecast.weather[0].main}
+                                className="forecast-icon"
+                            />
+                            <p>{(forecast.main.temp - 273.15).toFixed(2)}°C</p>
+                        </div>
+                    );
+                })}
+            </div>
+        );
+    };
+
     return (
-
-
         <main className="main">
             <div className="weather-app">
                 <form onSubmit={handleSearch} className="search-form">
                     <input
                         type="text"
                         value={city}
-                        onChange={(event) => setCity(event.target.value)}
-                        placeholder=" Enter city name"
-                        className="search-button"
+                        onChange={handleOnChange}
+                        placeholder="Enter city name"
+                        className="search-input"
+                        onKeyDown={(event) => {
+                            if (event.key === 'Enter') {
+                                handleSearch(event);
+                            }
+                        }}
                     />
-
+                    <button type="submit" className="btn">GO</button>
                 </form>
-
-                {weatherData && ( // Display weather data if available
+                {loading && <div className="loading">Loading...</div>}
+                {error && <p className="error-message">{error}</p>}
+                {weatherData && !loading && (
                     <div className="weather">
                         <div className="weather-details">
                             <h2>{weatherData.name}</h2>
@@ -79,17 +127,27 @@ const Weather = () => {
                                 alt={weatherData.weather[0].main}
                                 className="weather-icon"
                             />
-                            <p>Temprature: {(weatherData.main.temp - 273.15).toFixed(2)}°C</p>
-                            <p>Description: {weatherData.weather[0].main}</p>
-                            <p>Wind Speed: {weatherData.wind.speed} m/s</p>
-                            <p>Humidity: {weatherData.main.humidity}%</p>
-
-
+                            <p className='text-1'>{(weatherData.main.temp - 273.15).toFixed(2)}°C</p>
+                            <p className='text-2 '>{weatherData.weather[0].description}</p>
+                            <p>
+                                <ReactAnimatedWeather
+                                    icon={defaults.icon}
+                                    color={defaults.color}
+                                    size={defaults.size}
+                                    animate={defaults.animate}
+                                    className="icon"
+                                /> {weatherData.wind.speed} m/s
+                            </p>
+                            <p className='text-3'>Humidity: {weatherData.main.humidity}%</p>
+                            <p className='text-3'>
+                                Local Time: {getLocalTime(weatherData.timezone).toLocaleString()}
+                            </p>
+                            <h3 className='forecast-heading'>5 Days Forecast:</h3>
                         </div>
+                        {renderForecast()}
                     </div>
+
                 )}
-
-
             </div>
         </main>
     );
