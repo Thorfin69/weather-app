@@ -353,7 +353,7 @@ p {
 }
 
 .theme-selector button:hover {
-    background-color: #ddd;
+    background-color: var(--button-hover-bg);
 }
 
 .theme-selector button:active {
