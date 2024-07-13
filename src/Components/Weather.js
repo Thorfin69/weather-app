@@ -2,28 +2,36 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import './Weather.css';
 import ReactAnimatedWeather from 'react-animated-weather';
-
-const defaults = {
+//icon config
+const wind = {
     icon: 'WIND',
-    color: 'skyblue',
+    color: 'blue',
     size: 30,
     animate: true
 };
 
+const themes = {
+    LIGHT: 'light-theme',
+    DARK: 'dark-theme',
+    CYBERPUNK: 'cyberpunk-theme',
+    COFFEE: 'coffee-theme'
+};
+
 const Weather = () => {
-    const [city, setCity] = useState('Tokyo'); // Default city
+    const [city, setCity] = useState('Tokyo');
     const [weatherData, setWeatherData] = useState(null);
     const [forecastData, setForecastData] = useState(null);
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState(null);
+    const [currentTheme, setCurrentTheme] = useState(themes.LIGHT);
     const apiKey = process.env.REACT_APP_API_KEY;
-
+    //search handler
     const handleSearch = async (event) => {
         if (event) {
             event.preventDefault();
         }
         if (!apiKey) {
-            setError('Please set your API key in the .env file (or your secure environment variable storage).');
+            setError('Please set your API key in the .env file.');
             return;
         }
         if (!city) {
@@ -47,26 +55,21 @@ const Weather = () => {
     };
 
     useEffect(() => {
-        // Perform initial search for the default city when the component mounts
         handleSearch();
-    }, []); // Empty dependency array ensures this runs only once on mount
-
+    }, []);
+    //meow meow 
     const handleOnChange = (event) => {
         setCity(event.target.value);
     };
-
+    //local time 
     const getLocalTime = (timezone) => {
         const utcTime = new Date().getTime() + new Date().getTimezoneOffset() * 60000;
-        const localTime = new Date(utcTime + 1000 * timezone);
-        return localTime;
+        return new Date(utcTime + 1000 * timezone);
     };
-
+    //render forecast
     const renderForecast = () => {
-        if (!forecastData) {
-            return null;
-        }
+        if (!forecastData) return null;
 
-        // Group forecast data by day and take the first forecast of each day
         const dailyForecasts = forecastData.list.reduce((acc, forecast) => {
             const date = forecast.dt_txt.split(' ')[0];
             if (!acc[date]) {
@@ -74,10 +77,12 @@ const Weather = () => {
             }
             return acc;
         }, {});
+
+        //days of week
         const daysOfWeek = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
 
         return (
-
+            // 5 days forecast section
             <div className="forecast">
                 {Object.keys(dailyForecasts).slice(0, 5).map((date) => {
                     const forecast = dailyForecasts[date];
@@ -99,8 +104,10 @@ const Weather = () => {
     };
 
     return (
-        <main className="main">
+        //current theme
+        <main className={`main ${currentTheme}`}>
             <div className="weather-app">
+                {/* Form section */}
                 <form onSubmit={handleSearch} className="search-form">
                     <input
                         type="text"
@@ -116,10 +123,12 @@ const Weather = () => {
                     />
                     <button type="submit" className="btn">GO</button>
                 </form>
+                {/* loading  */}
                 {loading && <div className="loading">Loading...</div>}
                 {error && <p className="error-message">{error}</p>}
                 {weatherData && !loading && (
                     <div className="weather">
+                        {/* weather details */}
                         <div className="weather-details">
                             <h2>{weatherData.name}</h2>
                             <img
@@ -128,26 +137,35 @@ const Weather = () => {
                                 className="weather-icon"
                             />
                             <p className='text-1'>{(weatherData.main.temp - 273.15).toFixed(2)}°C</p>
-                            <p className='text-2 '>{weatherData.weather[0].description}</p>
-                            <p>
+                            <p className='text-2'>{weatherData.weather[0].description}</p>
+                            <p className='text-1'>
                                 <ReactAnimatedWeather
-                                    icon={defaults.icon}
-                                    color={defaults.color}
-                                    size={defaults.size}
-                                    animate={defaults.animate}
+                                    icon={wind.icon}
+                                    color={wind.color}
+                                    size={wind.size}
+                                    animate={wind.animate}
                                     className="icon"
                                 /> {weatherData.wind.speed} m/s
                             </p>
-                            <p className='text-3'>Humidity: {weatherData.main.humidity}%</p>
+                            <p className='text-1'>
+                                Humidity: {weatherData.main.humidity}%
+                            </p>
                             <p className='text-3'>
                                 Local Time: {getLocalTime(weatherData.timezone).toLocaleString()}
                             </p>
                             <h3 className='forecast-heading'>5 Days Forecast:</h3>
                         </div>
+                        {/* 5 days forecast function */}
                         {renderForecast()}
                     </div>
-
                 )}
+                {/* theme selection section */}
+                <div className="theme-selector">
+                    <button onClick={() => setCurrentTheme(themes.LIGHT)}>Light</button>
+                    <button onClick={() => setCurrentTheme(themes.DARK)}>Dark</button>
+                    <button onClick={() => setCurrentTheme(themes.CYBERPUNK)}>Cyberpunk</button>
+                    <button onClick={() => setCurrentTheme(themes.COFFEE)}>Coffee</button>
+                </div>
             </div>
         </main>
     );
