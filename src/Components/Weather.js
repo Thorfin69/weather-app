@@ -34,7 +34,7 @@ const Weather = () => {
     const [forecastData, setForecastData] = useState(null);
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState(null);
-    const [currentTheme, setCurrentTheme] = useState(themes.COFFEE);
+    const [currentTheme, setCurrentTheme] = useState(themes.FOREST);
     const [currentThemeIndex, setCurrentThemeIndex] = useState(0);
     const apiKey = process.env.REACT_APP_API_KEY;
 
